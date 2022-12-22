@@ -16,4 +16,13 @@ class GameController extends Controller
         return view('home');
     }
 
+    public function show($slug, IGDBService $service)
+    {
+        $game = $service->getGameBySlug($slug)->first();
+
+        dump($game);
+
+        return view('show', compact('game'));
+    }
+
 }

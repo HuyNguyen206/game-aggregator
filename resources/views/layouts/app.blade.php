@@ -17,7 +17,7 @@
 <header>
     <nav class="flex justify-between flex-col items-center md:flex-row py-4 px-8">
         <div class="flex justify-between space-x-8">
-            <div class="text-xl">LARACAST</div>
+            <div class="text-xl"><a href="/">LARACAST</a></div>
             <ul class="flex space-x-4">
                 <li><a href="">Game</a></li>
                 <li><a href="">Review</a></li>

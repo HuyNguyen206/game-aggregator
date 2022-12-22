@@ -20,7 +20,7 @@ class IGDBService
         $to = Carbon::now()->addMonth(2)->timestamp;
         $result = $this->client
             ->withBody(
-                "fields name, platforms.*, screenshots.url, cover.url, rating;
+                "fields name, platforms.*, screenshots.url, cover.url, rating, slug;
                 where (release_dates.date >= $from & release_dates.date <= $to)
                 & platforms = (39,6,48,49,130);
                 sort rating desc; limit 10;", 'text/plain')->post('games')->json();
@@ -34,7 +34,7 @@ class IGDBService
         $current = Carbon::now()->timestamp;
         $result = $this->client
             ->withBody(
-                "fields name, summary, platforms.*, screenshots.url, cover.url, rating;
+                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, slug;
                 where (release_dates.date >= $from & release_dates.date <= $current)
                 & platforms = (39,6,48,49,130)
                 & rating_count > 5;
@@ -49,7 +49,7 @@ class IGDBService
         $current = Carbon::now()->timestamp;
         $result = $this->client
             ->withBody(
-                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date;
+                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date, slug;
                 where (release_dates.date >= $current & release_dates.date <= $to)
                 & platforms = (39,6,48,49,130);
                 sort rating desc; limit 5;", 'text/plain')->post('games')->json();
@@ -63,7 +63,7 @@ class IGDBService
         $current = Carbon::now()->timestamp;
         $result = $this->client
             ->withBody(
-                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date;
+                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date, slug;
                 where (release_dates.date >= $current & release_dates.date <= $to)
                 & platforms = (39,6,48,49,130);
                 sort release_dates.date asc; limit 5;", 'text/plain')->post('games')->json();
@@ -71,6 +71,26 @@ class IGDBService
         return $this->formatResult($result);
     }
 
+    private function getSimilarGames($ids)
+    {
+        $result = $this->client
+            ->withBody(
+                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date, slug;
+                where id = ($ids); limit 7;", 'text/plain')->post('games')->json();
+
+        return $this->formatResult($result);
+    }
+
+    public function getGameBySlug($slug)
+    {
+        $result = $this->client
+            ->withBody(
+                "fields name, summary, platforms.*, screenshots.url, cover.url, rating, release_dates.date, similar_games.id;
+                where slug = \"$slug\";
+                sort rating desc; limit 5;", 'text/plain')->post('games')->json();
+
+        return $this->formatResult($result);
+    }
 
     private function getImagePath($game)
     {
@@ -109,6 +129,18 @@ class IGDBService
             $game['rating'] = $game['rating'] ?? random_int(20, 100);
             $latestIndex = isset($game['release_dates']) ? count($game['release_dates']) - 1 : 0;
             $game['release_date'] = isset($game['release_dates']) ? Carbon::parse($game['release_dates'][$latestIndex]['date'])->format('M d, Y') : 'no-info';
+
+            if (isset($game['similar_games'])) {
+                $ids = implode(',', collect($game['similar_games'])->pluck('id')->toArray());
+                $game['similar_games'] =  $this->getSimilarGames($ids);
+            }
+
+            if (isset($game['screenshots'])) {
+                $game['screenshots'] =  collect($game['screenshots'])->map(function ($sc){
+                     $sc['url'] = str_replace('t_thumb', 't_cover_big', $sc['url']);
+                     return $sc;
+                });
+            }
 
             return $game;
         });
