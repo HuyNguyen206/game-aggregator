@@ -17,7 +17,7 @@ class RecentReviewGame extends Component
 
     public function loadGames()
     {
-        $service = new IGDBService;
+        $service = resolve(IGDBService::class);
 
         $this->recentReviewGames = Cache::remember('recentReviewGames', 3600, function () use($service){
             return $service->getRecentViewedGame();

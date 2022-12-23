@@ -17,10 +17,18 @@ class PopularGame extends Component
 
     public function loadGames()
     {
-        $service = new IGDBService;
+        $service = resolve(IGDBService::class);
 
-        $this->popularGames = Cache::remember('popularGames', 3600, function () use($service){
+        $this->popularGames = Cache::remember($this->getCacheKey(), 3600, function () use($service){
            return $service->getPopularGame();
         });
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheKey(): string
+    {
+        return 'popularGames';
     }
 }

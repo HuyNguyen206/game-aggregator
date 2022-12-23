@@ -17,7 +17,7 @@ class CommingGame extends Component
 
     public function loadGames()
     {
-        $service = new IGDBService;
+        $service = resolve(IGDBService::class);
 
         $this->comingSoonGames = Cache::remember('comingSoonGames', 3600, function () use($service){
             return $service->getComingGame();

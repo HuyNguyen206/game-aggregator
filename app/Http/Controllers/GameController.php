@@ -19,9 +19,7 @@ class GameController extends Controller
     public function show($slug, IGDBService $service)
     {
         $game = $service->getGameBySlug($slug)->first();
-
         dump($game);
-
         return view('show', compact('game'));
     }
 

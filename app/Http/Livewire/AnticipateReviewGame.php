@@ -17,7 +17,7 @@ class AnticipateReviewGame extends Component
 
     public function loadGames()
     {
-        $service = new IGDBService;
+        $service = resolve(IGDBService::class);
 
         $this->mostAnticipateGames = Cache::remember('mostAnticipateGames', 3600, function () use($service){
             return $service->getMostAnticipate();

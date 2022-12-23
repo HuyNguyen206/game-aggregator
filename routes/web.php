@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('', [\App\Http\Controllers\GameController::class, 'index']);
 
-Route::get('{slug}', [\App\Http\Controllers\GameController::class, 'show'])->where('slug', '(\w+-?)+')->name('games.detail');
+Route::get('{slug}', [\App\Http\Controllers\GameController::class, 'show'])->where('slug', '(\w+-?-?)+')->name('games.detail');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
