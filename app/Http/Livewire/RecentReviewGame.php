@@ -22,5 +22,12 @@ class RecentReviewGame extends Component
         $this->recentReviewGames = Cache::remember('recentReviewGames', 3600, function () use($service){
             return $service->getRecentViewedGame();
         });
+
+        $this->recentReviewGames->each(function ($game){
+           $this->emit('addRating', [
+             'id' => $game['id'],
+             'rating' => $game['rating'] ?? $game['aggregated_rating'] ?? 0
+           ]);
+        });
     }
 }

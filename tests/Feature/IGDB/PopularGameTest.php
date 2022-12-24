@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\PopularGame;
-use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
-use Mockery\MockInterface;
 use Tests\TestCase;
 
 class PopularGameTest extends TestCase
 {
+    use MockService;
+
     /**
      * A basic feature test example.
      *
@@ -17,27 +17,6 @@ class PopularGameTest extends TestCase
      */
     public function test_can_render_popular_game()
     {
-//        $this->mock(Service::class, function (MockInterface $mock) {
-//            $mock->shouldReceive('process')->once();
-//        });
-
-        $this->instance(
-            PopularGame::class,
-            \Mockery::mock(PopularGame::class, function (MockInterface $mock) {
-                $mock->shouldReceive('getCacheKey')->andReturn('test_popularGames');
-            })
-        );
-        $this->instance(
-            IGDBService::class,
-            \Mockery::mock(IGDBService::class, function (MockInterface $mock) {
-                $mock->shouldReceive('getToken')->andReturn('dummy_token');
-            })
-        );
-
-        Http::fake([
-            config('services.igdb.base_url') . 'games' => Http::response($this->getFakeReponse()),
-        ]);
-
         $response = Livewire::test(PopularGame::class)->call('loadGames');
 
         $response->assertSee('Demon Horde Master');

@@ -9,22 +9,10 @@
                 <div>{{$game['platform']}}</div>
                 <div class="flex space-x-4">
                     <div>
-                        <div
-                            class="bg-gray-400 flex items-center justify-center rounded-full w-12 h-12">{{$game['rating'] ?? 0}}
-                            %
-                        </div>
-                        <div>
-                            Member score
-                        </div>
+                        <x-game-partials.rating-animation-script id="rating_game_{{$game['id']}}" ratingPoint="{{$game['rating']}}" label="User score"/>
                     </div>
                     <div>
-                        <div
-                            class="bg-gray-400 flex items-center justify-center rounded-full w-12 h-12">{{$game['aggregated_rating'] ?? 0}}
-                            %
-                        </div>
-                        <div>
-                            Critic score
-                        </div>
+                        <x-game-partials.rating-animation-script id="aggregated_rating_game_{{$game['id']}}" ratingPoint="{{$game['aggregated_rating']}}" label="Critic score"/>
                     </div>
                     @isset($game['websites'])
                         <div class="social-contact flex space-x-3">
