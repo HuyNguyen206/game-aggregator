@@ -31,10 +31,11 @@ class IGDBService
         $result = $this->client
             ->withBody(
                 "fields name, platforms.*, screenshots.url, cover.url, rating, slug, aggregated_rating, rating_count;
-                where (release_dates.date >= $from & release_dates.date <= $to)
+                where (first_release_date >= $from & first_release_date <= $to)
+                & rating_count > 5
                 & platforms = (39,6,48,49,130);
-                sort aggregated_rating_count desc; limit 10;", 'text/plain')->post('games')->json();
-
+                sort rating_count desc; limit 10;", 'text/plain')->post('games')->json();
+      
         return $this->formatResult($result);
     }
 
@@ -100,7 +101,7 @@ class IGDBService
         return $this->formatResult($result);
     }
 
-    private function getImagePath($game)
+    private function getImagePath($game, $size = 't_cover_big')
     {
         if (isset($game['cover'])) {
             $imageUrl = $game['cover']['url'];
@@ -110,7 +111,7 @@ class IGDBService
             $imageUrl = asset('images/no_img.jpg');
         }
 
-        return str_replace('t_thumb', 't_cover_big', $imageUrl);
+        return str_replace('t_thumb', $size, $imageUrl);
     }
 
     private function getPlatforms($game)
@@ -140,7 +141,9 @@ class IGDBService
 
             if (isset($game['screenshots'])) {
                 $game['screenshots'] = collect($game['screenshots'])->map(function ($sc) {
-                    $sc['url'] = str_replace('t_thumb', 't_cover_big', $sc['url']);
+                    $originUrl = $sc['url'];
+                    $sc['url'] = str_replace('t_thumb', 't_screenshot_med', $originUrl);
+                    $sc['screenshot'] = str_replace('t_thumb', 't_screenshot_huge', $originUrl);
                     return $sc;
                 });
             }
@@ -182,7 +185,7 @@ class IGDBService
         $game['release_date'] = isset($game['release_dates']) ? Carbon::parse($game['release_dates'][$latestIndex]['date'])->format('M d, Y') : 'no-info';
         $game['rating'] = isset($game['rating']) ? round($game['rating']) / 100 : 0;
         $game['aggregated_rating'] = isset($game['aggregated_rating']) ? round($game['aggregated_rating']) / 100 : 0;
-        
+
         return $game;
     }
 

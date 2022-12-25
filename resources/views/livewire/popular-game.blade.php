@@ -7,8 +7,8 @@
                         <img src="{{$game['cover_image_path']}}" alt="" class="w-full h-full">
                         @isset($game['aggregated_rating'])
                             <div
-                                class="bg-gray-500 rounded-full absolute -right-6 -bottom-6 w-14 h-14 flex items-center justify-center">
-                                {{$game['aggregated_rating']}}%
+                                class="bg-gray-500 rounded-full absolute -right-6 -bottom-6 w-14 h-14 flex items-center justify-center"
+                                id="popular_game_{{$game['id']}}">
                             </div>
                         @endisset
                     </div>

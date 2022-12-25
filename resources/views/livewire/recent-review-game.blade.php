@@ -6,7 +6,7 @@
                class="inline-block flex space-x-2 bg-gray-400 rounded-xl p-4 hover:opacity-75 transition duration-200">
                 <img src="{{$recentReviewGame['cover_image_path']}}" class="w-44 h-44 flex-none" alt="">
                 <div>
-                    <div class="bg-gray-700 flex items-center justify-center rounded-full w-14 h-14 relative" id="game_{{$recentReviewGame['id']}}">
+                    <div class="bg-gray-700 flex items-center justify-center rounded-full w-14 h-14 relative" id="recent_game_{{$recentReviewGame['id']}}">
                     </div>
                 </div>
                 <div>
@@ -25,10 +25,5 @@
             <x-game-partials.loading-animation/>
         @endforelse
     </div>
-
 </div>
-
-@push('scripts')
-    <x-game-partials.livewire-rating-animation-script></x-game-partials.livewire-rating-animation-script>
-@endpush
 

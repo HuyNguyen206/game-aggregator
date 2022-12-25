@@ -16,4 +16,8 @@
 
         </section>
     </main>
+    @push('scripts')
+        <x-game-partials.livewire-rating-animation-script></x-game-partials.livewire-rating-animation-script>
+    @endpush
 </x-app-layout>
+

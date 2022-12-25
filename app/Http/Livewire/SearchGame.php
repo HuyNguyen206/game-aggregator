@@ -15,7 +15,6 @@ class SearchGame extends Component
         if (trim($this->q)) {
             $service = resolve(IGDBService::class);
             $games = $service->searchGame($this->q);
-            $this->dispatchBrowserEvent('search');
         }
 
         return view('livewire.search-game', compact('games'));

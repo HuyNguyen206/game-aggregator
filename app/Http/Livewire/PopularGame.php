@@ -22,6 +22,14 @@ class PopularGame extends Component
         $this->popularGames = Cache::remember($this->getCacheKey(), 3600, function () use($service){
            return $service->getPopularGame();
         });
+
+        $this->popularGames->each(function ($game){
+            $this->emit('addRating', [
+                'id' => $game['id'],
+                'rating' => $game['rating'] ?? $game['aggregated_rating'] ?? 0,
+                'prefix' => 'popular_game'
+            ]);
+        });
     }
 
     /**

@@ -32,18 +32,39 @@
                     <p class="mt-4">{{$game['summary']}}</p>
                 @endisset
                 @isset($game['videos'])
-                    <a href="https://www.youtube.com/watch?v={{$game['videos'][0]['video_id']}}" target="_blank">
-                        <button
-                            class="hover:opacity-80 flex items-center transition mt-4 px-4 pl-8 py-4 bg-blue-400 text-white relative rounded-md">
-                            <span>Play trailer</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                 stroke="currentColor" class="w-6 h-6 absolute left-2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
-                            </svg>
+                    <div x-data="{showVideo: false}">
+                            <button @click="showVideo = true" @click.away.window="showVideo = false"
+                                class="hover:opacity-80 flex items-center transition mt-4 px-4 pl-8 py-4 bg-blue-400 text-white relative rounded-md">
+                                <span>Play trailer</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                     stroke="currentColor" class="w-6 h-6 absolute left-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+                                </svg>
 
-                        </button>
-                    </a>
+                            </button>
+                        <template x-if="showVideo">
+                            <div style="background-color: #808080ed" class="fixed flex items-center justify-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+                                <div class="relative w-full h-full max-w-4xl md:h-auto bg-gray-900">
+                                    <!-- Modal content -->
+                                    <div @keydown.esc.window="showVideo = false"  class="z-30 relative bg-gray-900 shadow dark:bg-gray-700">
+                                        <!-- Modal header -->
+                                        <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                                            <button @click.prevent="showVideo = false" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+                                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="p-6 space-y-6 flex items-center justify-center">
+                                            <iframe width="860" height="515" src="https://www.youtube.com/embed/{{$game['videos'][0]['video_id']}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
                 @endisset
             </div>
         </article>
@@ -53,14 +74,31 @@
                 <h2 class="text-2xl uppercase">
                     IMAGES
                 </h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-data="{showImage:false, imageUrl: null}">
                     @foreach($game['screenshots'] as $screenshot)
                         <div class="flex-none">
-                            <a href="" class="hover:opacity-80 transition">
-                                <img src="{{$screenshot['url']}}" alt="">
-                            </a>
+                            <img src="{{$screenshot['url']}}" alt="" class="hover:opacity-80 transition"
+                                 @click="showImage = true; imageUrl = '{{$screenshot['screenshot']}}'">
                         </div>
                     @endforeach
+                        <div x-show="showImage" x-cloak style="background-color: #808080ed" class="fixed flex items-center justify-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+                            <div @click.away="showImage = false" class="relative w-full h-full max-w-4xl md:h-auto bg-gray-900">
+                                <!-- Modal content -->
+                                <div @keydown.esc.window="showImage = false"  class="z-30 relative bg-gray-900 shadow dark:bg-gray-700">
+                                    <!-- Modal header -->
+                                    <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                                        <button @click.prevent="showImage = false" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="defaultModal">
+                                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+                                    </div>
+                                    <!-- Modal body -->
+                                    <div class="p-6 space-y-6 flex items-center justify-center">
+                                        <img :src="imageUrl" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         @endisset

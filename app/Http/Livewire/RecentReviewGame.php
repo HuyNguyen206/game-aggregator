@@ -26,7 +26,8 @@ class RecentReviewGame extends Component
         $this->recentReviewGames->each(function ($game){
            $this->emit('addRating', [
              'id' => $game['id'],
-             'rating' => $game['rating'] ?? $game['aggregated_rating'] ?? 0
+             'rating' => $game['rating'] ?? $game['aggregated_rating'] ?? 0,
+               'prefix' => 'recent_game'
            ]);
         });
     }

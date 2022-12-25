@@ -1,7 +1,7 @@
 <script>
         Livewire.on('addRating', params => {
             console.log(params)
-            var bar = new ProgressBar.Circle(document.querySelector(`#game_${params.id}`), {
+            var bar = new ProgressBar.Circle(document.querySelector(`#${params.prefix}_${params.id}`), {
                 color: 'white',
                 // This has to be the same size as the maximum width to
                 // prevent clipping
